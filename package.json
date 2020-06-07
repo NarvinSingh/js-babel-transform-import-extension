@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-import-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Change the file extension in require calls when transpiling import statements",
   "main": "lib/index.js",
   "files": [
