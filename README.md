@@ -74,3 +74,26 @@ You may also supply your own custom mappings in `.babelrc`. In this example,
   ]
 }
 ```
+
+### Jest
+
+This plugin does not work with Jest when using babel-jest to transpile the files because Jest
+_expects_ the original file extension. To account for this, you can leverage the fact that Jest will
+run in the `test` environment and setup your `.babelrc` to have the plugin do nothing in that case.
+In this example,
+
+- The plugin will run in all environments with default options, except for the `test` environment
+- The plugin will be effectively disabled in the `test` environment because it will not change any
+  file extensions
+
+```JSON
+{
+  "presets": [["@babel/env"]],
+  "plugins": ["transform-import-extension"],
+  "env": {
+    "test": {
+      "plugins": [["transform-import-extension", { "mjs": "mjs" }]]
+    }
+  }
+}
+```
