@@ -1,0 +1,61 @@
+{
+  "name": "babel-plugin-transform-import-extension",
+  "version": "1.0.0",
+  "description": "Change the file extension in require calls when transpiling import statements",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "clean.mjs"
+  ],
+  "scripts": {
+    "format": "prettier --check src/**/* *.md .*rc *.json",
+    "lint": "eslint src/**/*",
+    "test": "jest",
+    "clean": "node ./clean.mjs lib",
+    "build": "babel src --out-dir lib --ignore \"**/*.test.js\"",
+    "rebuild": "npm run clean && npm run build",
+    "prepare": "npm run format && npm run lint && npm run test && npm run rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NarvinSingh/js-babel-transform-import-extension.git"
+  },
+  "keywords": [
+    "babel",
+    "plugin",
+    "babel-plugin",
+    "transform",
+    "convert",
+    "rewrite",
+    "extension",
+    "mjs",
+    "js",
+    "import",
+    "require",
+    "es",
+    "module",
+    "commonjs",
+    "es5",
+    "es6",
+    "es6+"
+  ],
+  "author": "Narvin Singh <Narvin.A.Singh@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NarvinSingh/js-babel-transform-import-extension/issues"
+  },
+  "homepage": "https://github.com/NarvinSingh/js-babel-transform-import-extension#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@types/jest": "^25.2.3",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5"
+  }
+}

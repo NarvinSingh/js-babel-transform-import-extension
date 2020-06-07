@@ -1,0 +1,11 @@
+{
+  "env": {
+    "jest": true
+  },
+  "plugins": ["prettier"],
+  "extends": ["airbnb-base", "prettier"],
+  "rules": {
+    "import/extensions": ["error", "ignorePackages"],
+    "prettier/prettier": "error"
+  }
+}
