@@ -14,8 +14,8 @@
     "clean": "node ./clean.mjs lib",
     "build": "babel src --out-dir lib --ignore \"**/*.test.js\"",
     "rebuild": "npm run clean && npm run build",
-    "prepare": "npm run format && npm run lint && npm run test && npm run rebuild",
-    "preversion": "npm run prepare"
+    "preversion": "npm run format && npm run lint && npm run test && npm run rebuild",
+    "prepare": "npm run preversion"
   },
   "repository": {
     "type": "git",
