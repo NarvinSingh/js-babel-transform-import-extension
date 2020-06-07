@@ -66,7 +66,7 @@ You may also supply your own custom mappings in `.babelrc`. In this example,
   "plugins": [
     [
       "transform-import-extension",
-      "options": {
+      {
         "mjs": "js",
         "foo": "bar"
       }
