@@ -1,9 +1,14 @@
 # Babel Plugin to Transform Import File Extensions
 
-When transpiling ES modules with `import` statements to CommonJS modules with `require` calls, if
-you import other ES modules with the `.mjs` file extension, the resulting `require` calls will fail
-because all the transpiled `.mjs` files now have `.js` extensions, but the `require` calls still
-refer to the `.mjs` extension. This plugin will fix the `require` calls.
+When ES modules are transpiled to CommonJS modules, two things that happen are that:
+
+1. `import` statements are converted to `require` calls
+2. modules with `mjs` file extensions become `js` files in the output directory
+
+However, the paths in the `import` statments are _not_ changed in the `require` calls. So if you
+were importing any of these modules using a relative path and specifying the `mjs` extension,
+`require` will not be able to find them in the output directory. This plugin will rewrite the path
+in the `require` calls to have the `js` extension.
 
 ## Installation
 
@@ -13,18 +18,28 @@ refer to the `.mjs` extension. This plugin will fix the `require` calls.
 
 ## Usage
 
-This plugin is meant to be used in a workflow where you write modern JavaScript using ES modules and
-want to be able to run your original code, as well as your transpiled code.
+Use this plugin in a workflow where you write modern JavaScript using ES modules and can run your
+original code, as well as your transpiled code.
 
-Since Node.js interprets files with the `.mjs` extension as ES modules and files with the `.js` as
-CommonJS modules, we have to use the `.mjs` extension if we want to run our original code. While we
-could include `"type": "module"` in `package.json` to make Node treat all files as ES modules and
-use only the `.js` extension, we wouldn't be able to run our transpiled code because `require` won't
-be defined in this case. We can't omit the file extension altogher in the import statement either,
-because Node doesn't infer file extensions for modules that are not built-in or installed (in the
-`node_modules` directory). This plugin helps you get around these issues.
+There are two ways to tell Node.js to treat files as ES modules:
 
-Include the plugin in your `.baberc` file. The default mapping is to convert `.mjs` to `.js`.
+1. treat all files as ES modules by including `"type": "module"` in `package.json`
+2. treat individual files as ES modules by giving them the `mjs` extension
+
+If we went with the first option, we could give all of our files `js` extensions. However, we won't
+be able to run our transpiled code from within our package because those files will be considered ES
+modules and `require` will be `undefined`.
+
+We've already discussed why the second option doesn't work.
+
+Omitting the file extension entirely in the `import` statement to have Node resolve the file for us
+won't work either, because Node does not resolve `mjs` files if they are not installed (in the
+`node_modules` directory).
+
+So we have to resort to a plugin if we want to run both versions of our code from within their own
+package.
+
+Include the plugin in your `.baberc` file.
 
 ```JSON
 {
@@ -33,24 +48,20 @@ Include the plugin in your `.baberc` file. The default mapping is to convert `.m
 }
 ```
 
-Then you can write some ES module, `module.mjs`, then import it in another ES module like this:
+Now you can write some ES module, `module.mjs`, then import it in another ES module:
 
 ```JavaScript
 import foo from "./module.mjs";
 ```
 
-The `import` code would normally be transpiled to something like this:
+That `import` statement may normally be transpiled to something like this:
 
 ```JavaScript
-"use strict";
-
 var _module = _interopRequireDefault(require("./module.mjs"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 ```
 
-However, there is no `./module.mjs` because it was renamed to `./module.js` when it was transpiled.
-This plugin will cause the `require` call to be transpiled as this instead:
+However, there is no `./module.mjs` in the output directory because it was renamed to `./module.js`.
+This plugin will cause that `require` call to be transpiled to this instead:
 
 ```JavaScript
 var _module = _interopRequireDefault(require("./module.js"));
@@ -73,6 +84,16 @@ You may also supply your own custom mappings in `.babelrc`. In this example,
     ]
   ]
 }
+```
+
+Only import statements with local relative paths will have their extensions rewritten. So, none of
+these `import` statments will have their paths rewritten:
+
+```JavaScript
+import fs from "fs";  // built-in module
+import express from 'express'; // installed module
+import foo from "./module"; // relative path module without a file extension
+import bar from "/module.mjs"; // absolute path module
 ```
 
 ### Jest
